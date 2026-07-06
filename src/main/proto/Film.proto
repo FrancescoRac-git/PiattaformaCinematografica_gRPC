@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option  java_package = "videoteca.backend.gRPC";
+option java_outer_classname = "FilmProto";
+
+message Film {
+  string id = 1;
+  string titolo = 2;
+  string regista = 3;
+  int32 anno_uscita = 4;
+  string genere = 5;
+  int32 valutazione = 6;
+  string stato_visione = 7;
+}
+
+
+message GestioneFilmResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+
+message AddFilmRequest {
+  Film film = 1;
+}
+
+message UpdateFilmRequest {
+  Film film = 1;
+}
+
+message DeleteFilmRequest {
+  string id = 1;
+}
+
+
+message SearchFilmsRequest {
+  string query_titolo = 1;
+  string query_regista = 2;
+  string filtro_genere = 3;
+  string filtro_stato = 4;
+  string criterio_ordinamento = 5;
+}
+
+
+message SearchFilmsResponse {
+  repeated Film films = 1;
+}
+
+
+
+service FilmService {
+
+  rpc AddFilm (AddFilmRequest) returns (GestioneFilmResponse);
+  rpc UpdateFilm (UpdateFilmRequest) returns (GestioneFilmResponse);
+  rpc DeleteFilm (DeleteFilmRequest) returns (GestioneFilmResponse);
+  rpc SearchFilms (SearchFilmsRequest) returns (SearchFilmsResponse);
+}
