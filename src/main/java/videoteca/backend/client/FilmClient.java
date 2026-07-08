@@ -22,7 +22,7 @@ public class FilmClient {
     public void shutdown() {
         channel.shutdown();
     }
-    public void aggiungiNuovoFilm(String id, String titolo, String regista, int annoUscita, String genere) {
+    public void aggiungiNuovoFilm(int id, String titolo, String regista, int annoUscita, String genere,int valutazione, String statovisione) {
         System.out.println("Client: Preparazione dell'invio del film '" + titolo + "'...");
 
 
@@ -32,6 +32,8 @@ public class FilmClient {
                 .setRegista(regista)
                 .setAnnoUscita(annoUscita)
                 .setGenere(genere)
+                .setValutazione(valutazione)
+                .setStatoVisione(statovisione)
                 .build();
 
 

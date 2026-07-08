@@ -1,37 +1,80 @@
 package videoteca.backend.model;
 
+
+
 public class Film {
 
-    private String titolo;
-    private String regista;
-    private int annoDiUscita;
-    private int valutazionePersonale;
-    private StatoVisione StatoVisione;
-    private Genere Genere;
-    private int id;
+    private final String titolo;
+    private final String regista;
+    private final int annoDiUscita;
+    private final int valutazionePersonale;
+    private final StatoVisione statoVisione;
+    private final Genere genere;
+    private final int id;
 
-    public int getId() {
-        return id;
+    private Film(Builder builder) {
+        this.titolo = builder.titolo;
+        this.regista = builder.regista;
+        this.annoDiUscita = builder.annoDiUscita;
+        this.valutazionePersonale= builder.valutazione;
+        this.statoVisione = builder.statoVisione;
+        this.genere = builder.genere;
+        this.id = builder.id;
+
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public static class Builder {
+        private final String titolo;
+        private final String regista;
 
-    public Film(String titolo, String regista, int annoDiUscita, int valutazionePersonale, StatoVisione statoVisione,
-                Genere genere) {
-        this.titolo = titolo;
-        this.regista = regista;
-        this.annoDiUscita = annoDiUscita;
-        setValutazionePersonale(valutazionePersonale);
-        this.StatoVisione = statoVisione;
-        this.Genere = genere;
+        private int id =0;
+        private int annoDiUscita=0;
+        private Genere genere = null;
+        private int valutazione = 0;
+        private StatoVisione statoVisione = null;
 
+        public Builder(String titolo, String regista) {
+            this.titolo = titolo;
+            this.regista = regista;
+        }
+
+        public Builder id(int val) {
+            this.id = val;
+            return this;
+        }
+
+        public Builder annoUscita(int val) {
+            this.annoDiUscita = val;
+            return this;
+        }
+
+        public Builder genere(Genere val) {
+            this.genere = val;
+            return this;
+        }
+
+        public Builder valutazione(int val) {
+            this.valutazione = val;
+            return this;
+        }
+
+        public Builder statoVisione(StatoVisione val) {
+            this.statoVisione = val;
+            return this;
+        }
+
+        public Film build() {
+            if (valutazione < 0 || valutazione > 5) {
+                throw new IllegalArgumentException("Errore: La valutazione deve essere compresa tra 0 e 5");
+            }
+            return new Film(this);
+        }
     }
 
     public String getTitolo() {
         return titolo;
     }
+
     public String getRegista() {
         return regista;
     }
@@ -40,45 +83,19 @@ public class Film {
         return annoDiUscita;
     }
 
-
-
     public int getValutazionePersonale() {
         return valutazionePersonale;
     }
 
-    public void setTitolo(String titolo) {
-        this.titolo = titolo;
-    }
-
-    public void setRegista(String regista) {
-        this.regista = regista;
-    }
-
-    public void setAnnoDiUscita(int annoDiUscita) {
-        this.annoDiUscita = annoDiUscita;
-    }
-
-    public void setValutazionePersonale(int valutazionePersonale) {
-        if (valutazionePersonale>1 && valutazionePersonale<5)
-            this.valutazionePersonale = valutazionePersonale;
-        else
-            throw new IllegalArgumentException("la valutazione deve essere compresa tra 1 e 5");
-
-    }
-
     public StatoVisione getStatoVisione() {
-        return StatoVisione;
-    }
-
-    public void setStatoVisione(StatoVisione statoVisione) {
-        StatoVisione = statoVisione;
+        return statoVisione;
     }
 
     public Genere getGenere() {
-        return Genere;
+        return genere;
     }
 
-    public void setGenere(Genere genere) {
-        Genere = genere;
+    public int getId() {
+        return id;
     }
 }

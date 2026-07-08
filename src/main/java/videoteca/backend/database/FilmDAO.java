@@ -5,7 +5,7 @@ import videoteca.backend.model.Film;
 import java.util.List;
 
 public interface FilmDAO {
-    void aggiungi(Film film);
+    Film aggiungi(Film film);
     void modificaFilm(Film film);
     void eliminaFilm(int id);
 

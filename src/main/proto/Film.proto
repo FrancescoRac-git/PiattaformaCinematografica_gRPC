@@ -5,7 +5,7 @@ option  java_package = "videoteca.backend.gRPC";
 option java_outer_classname = "FilmProto";
 
 message Film {
-  string id = 1;
+  int32 id = 1;
   string titolo = 2;
   string regista = 3;
   int32 anno_uscita = 4;

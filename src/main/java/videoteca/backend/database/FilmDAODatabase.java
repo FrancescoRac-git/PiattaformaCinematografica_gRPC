@@ -11,7 +11,7 @@ import java.util.List;
 public class FilmDAODatabase implements FilmDAO {
 
     private static FilmDAODatabase instance = null;
-    private  Connection connection; // OGGETTO CHE METTE IN COMUNICAZIONE JAVA CON IL DATABASE
+    private static Connection connection; // OGGETTO CHE METTE IN COMUNICAZIONE JAVA CON IL DATABASE
 
 
     private FilmDAODatabase(Connection connection) {
@@ -26,7 +26,7 @@ public class FilmDAODatabase implements FilmDAO {
     }
 
     @Override
-    public void aggiungi(Film film) {
+    public Film aggiungi(Film film) {
         String sql = "INSERT INTO film (titolo,regista,annoDiUscita,valutazionepersonale,statoVisione,genere) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);){
 
@@ -40,9 +40,17 @@ public class FilmDAODatabase implements FilmDAO {
 
                 try (ResultSet rs = pstmt.getGeneratedKeys()) {
                     if (rs.next()) {
-                        film.setId(rs.getInt(1));
+                        int idGenerato = (rs.getInt(1));
+                        return new Film.Builder(film.getTitolo(), film.getRegista())
+                                .id(idGenerato)
+                                .annoUscita(film.getAnnoDiUscita())
+                                .valutazione(film.getValutazionePersonale())
+                                .statoVisione(film.getStatoVisione())
+                                .genere(film.getGenere())
+                                .build();
                     }
                 }
+                return  film;
         }
         catch (Exception e){
             throw new RuntimeException(e);
@@ -102,9 +110,13 @@ public class FilmDAODatabase implements FilmDAO {
                     StatoVisione statoVisione = StatoVisione.valueOf(rs.getString("statoVisione"));
                     int idFilm = rs.getInt("id");
 
-                    Film filmTrovato = new Film(tit,regista,annoDiUscita,valutazionePersonale,statoVisione,genere);
-                    filmTrovato.setId(idFilm);
-                    return filmTrovato;
+                    return new Film.Builder(tit,regista)
+                            .annoUscita(annoDiUscita)
+                            .valutazione(valutazionePersonale)
+                            .genere(genere)
+                            .statoVisione(statoVisione)
+                            .id(idFilm)
+                            .build();
                 }
             }
 
@@ -133,8 +145,13 @@ public class FilmDAODatabase implements FilmDAO {
                     StatoVisione statoVisione = StatoVisione.valueOf(rs.getString("statoVisione"));
                     int idFilm = rs.getInt("id");
 
-                    Film filmTrovato = new Film(titolo,reg,annoDiUscita,valutazionePersonale,statoVisione,genere);
-                    filmTrovato.setId(idFilm);
+                    Film filmTrovato = new Film.Builder(titolo,regista)
+                            .annoUscita(annoDiUscita)
+                            .valutazione(valutazionePersonale)
+                            .genere(genere)
+                            .statoVisione(statoVisione)
+                            .id(idFilm)
+                            .build();
                     ret.add(filmTrovato);
                 }
             }
@@ -160,8 +177,13 @@ public class FilmDAODatabase implements FilmDAO {
                     StatoVisione statoVisione = StatoVisione.valueOf(rs.getString("statoVisione"));
                     int idFilm = rs.getInt("id");
 
-                    Film filmTrovato = new Film(titolo,reg,annoDiUscita,valutazionePersonale,statoVisione,genere);
-                    filmTrovato.setId(idFilm);
+                    Film filmTrovato = new Film.Builder(titolo,reg)
+                            .annoUscita(annoDiUscita)
+                            .valutazione(valutazionePersonale)
+                            .genere(genere)
+                            .statoVisione(statoVisione)
+                            .id(idFilm)
+                            .build();
                     ret.add(filmTrovato);
                 }
             }
