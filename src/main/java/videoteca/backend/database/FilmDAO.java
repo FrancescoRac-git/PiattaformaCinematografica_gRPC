@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface FilmDAO {
     Film aggiungi(Film film);
-    void modificaFilm(Film film);
+    void updateFilm(Film film);
     void eliminaFilm(int id);
 
     Film cercaPerTitolo(String titolo);

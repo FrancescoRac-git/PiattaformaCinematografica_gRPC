@@ -59,7 +59,7 @@ public class FilmDAODatabase implements FilmDAO {
     }
 
     @Override
-    public void modificaFilm(Film film) {
+    public void updateFilm(Film film) {
         String sql = "UPDATE film SET regista =?, annoDiUscita =?, valutazionePersonale=?, statoVisione=?, genere=?,titolo=? WHERE id=?";
         try(PreparedStatement pstmt = connection.prepareStatement(sql);){
 
