@@ -1,0 +1,89 @@
+import io.grpc.Server;
+import io.grpc.ServerBuilder;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import videoteca.backend.client.FilmClient;
+import videoteca.backend.database.FilmDAO;
+import videoteca.backend.database.FilmDAODatabase;
+import videoteca.backend.gRPC.FilmServiceImpl;
+import videoteca.backend.model.Film;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+public class ClientServerTest {
+    private static Server server;
+    private static FilmClient client;
+    private static FilmDAODatabase filmDAODatabase;
+    private static Connection connection;
+
+
+    @BeforeAll
+    static void startServerAndClient() throws Exception {
+
+        String url = "jdbc:postgresql://localhost:5432/videoteca_db";
+        String user = "postgres";
+        String password = "postgresql";
+        connection = DriverManager.getConnection(url, user, password);
+        filmDAODatabase = FilmDAODatabase.getInstance(connection);
+
+
+        server = ServerBuilder.forPort(8980)
+                .addService(new FilmServiceImpl(filmDAODatabase))
+                .build()
+                .start();
+
+        client = new FilmClient("localhost", 8980);
+    }
+
+    @AfterAll
+    static void stopServerAndClient() {
+        if (client != null) client.shutdown();
+        if (server != null) server.shutdown();
+    }
+
+    @BeforeEach
+    void setUpDatabase() throws Exception {
+        String url = "jdbc:postgresql://localhost:5432/videoteca_db";
+        String user = "postgres";
+        String password = "postgresql";
+        connection = DriverManager.getConnection(url, user, password);
+        filmDAODatabase = FilmDAODatabase.getInstance(connection);
+
+        List<Film> films = filmDAODatabase.tuttiIfilm();
+        for(Film film : films){
+            filmDAODatabase.eliminaFilm(film.getId());
+        }
+    }
+
+    @AfterEach
+    void tearDownDatabase() throws Exception {
+        if (connection != null) {
+            connection.close();
+        }
+    }
+
+    @Test
+    @DisplayName("Integrazione: Aggiunta e Ricerca via gRPC")
+    void testAggiungiECercaRete() {
+
+        client.aggiungiNuovoFilm("Il Padrino", "Francis Ford Coppola", 1972, "DRAMMATICO", 5, "VISTO");
+
+        var risultati = client.cercaFilm("Il Padrino", "", "", "", "");
+
+        assertFalse(risultati.isEmpty(), "Il server deve restituire la lista contenente il film inserito");
+        assertEquals("Il Padrino", risultati.get(0).getTitolo(), "Il titolo deve corrispondere");
+        assertEquals("Francis Ford Coppola", risultati.get(0).getRegista(), "Il regista deve corrispondere");
+    }
+
+
+
+}
+
+
+
