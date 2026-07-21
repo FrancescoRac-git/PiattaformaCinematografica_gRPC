@@ -19,12 +19,11 @@ public class FilmClient {
     public void shutdown() {
         channel.shutdown();
     }
-    public void aggiungiNuovoFilm(int id, String titolo, String regista, int annoUscita, String genere,int valutazione, String statovisione) {
+    public void aggiungiNuovoFilm(String titolo, String regista, int annoUscita, String genere,int valutazione, String statovisione) {
         System.out.println("Client: Preparazione dell'invio del film '" + titolo + "'...");
 
 
         Film nuovoFilm = Film.newBuilder()
-                .setId(id)
                 .setTitolo(titolo)
                 .setRegista(regista)
                 .setAnnoUscita(annoUscita)

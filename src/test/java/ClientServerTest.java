@@ -1,10 +1,7 @@
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import videoteca.backend.client.FilmClient;
-import videoteca.backend.database.FilmDAO;
+import videoteca.frontend.client.FilmClient;
 import videoteca.backend.database.FilmDAODatabase;
 import videoteca.backend.gRPC.FilmServiceImpl;
 import videoteca.backend.model.Film;
