@@ -1,4 +1,4 @@
-package videoteca.backend;
+package videoteca.frontend;
 
 import videoteca.frontend.client.FilmClient;
 
