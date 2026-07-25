@@ -42,7 +42,9 @@ message SearchFilmsRequest {
   string criterio_ordinamento = 5;
 }
 
+message GetAllFilmsRequest{
 
+}
 message SearchFilmsResponse {
   repeated Film films = 1;
 }
@@ -55,4 +57,5 @@ service FilmService {
   rpc UpdateFilm (UpdateFilmRequest) returns (GestioneFilmResponse);
   rpc DeleteFilm (DeleteFilmRequest) returns (GestioneFilmResponse);
   rpc SearchFilms (SearchFilmsRequest) returns (SearchFilmsResponse);
+  rpc getAll(GetAllFilmsRequest) returns (SearchFilmsResponse);
 }

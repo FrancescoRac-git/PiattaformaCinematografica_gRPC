@@ -1,7 +1,9 @@
-package videoteca.backend.client;
+package videoteca.frontend.client;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import videoteca.backend.gRPC.*;
+
+import java.util.List;
 
 public class FilmClient {
 
@@ -19,6 +21,8 @@ public class FilmClient {
     public void shutdown() {
         channel.shutdown();
     }
+
+
     public void aggiungiNuovoFilm(String titolo, String regista, int annoUscita, String genere,int valutazione, String statovisione) {
         System.out.println("Client: Preparazione dell'invio del film '" + titolo + "'...");
 
@@ -127,6 +131,21 @@ public class FilmClient {
             return new java.util.ArrayList<>();
         }
     }
+
+    public List<Film> getAll(){
+        GetAllFilmsRequest request = GetAllFilmsRequest.newBuilder().build();
+        try{
+            SearchFilmsResponse response = stub.getAll(request);
+            System.out.println("Client: Ricerca completata. Trovati " + response.getFilmsCount() + " film.");
+
+            return  response.getFilmsList();
+
+        } catch (Exception e) {
+            System.err.println("Client: Errore durante la ricerca: " + e.getMessage());
+            return new java.util.ArrayList<>();
+        }
+    }
+
 
 
 }

@@ -165,4 +165,38 @@ public class FilmServiceImpl extends FilmServiceGrpc.FilmServiceImplBase {
                     .asRuntimeException());
         }
     }
+
+    @Override
+    public void getAll(GetAllFilmsRequest request, StreamObserver<SearchFilmsResponse> responseObserver) {
+
+
+        try {
+            List<videoteca.backend.model.Film> filmTrovatiDalDAO = filmDAO.tuttiIfilm();
+
+            SearchFilmsResponse.Builder response =  SearchFilmsResponse.newBuilder();
+            for (videoteca.backend.model.Film f : filmTrovatiDalDAO){
+                Film filmGrpc = Film.newBuilder()
+                        .setId(f.getId())
+                        .setTitolo(f.getTitolo())
+                        .setRegista(f.getRegista())
+                        .setAnnoUscita(f.getAnnoDiUscita())
+                        .setGenere(f.getGenere().name())
+                        .setValutazione(f.getValutazionePersonale())
+                        .setStatoVisione(f.getStatoVisione().name())
+                        .build();
+
+                response.addFilms(filmGrpc);
+            }
+            responseObserver.onNext(response.build());
+            responseObserver.onCompleted();
+
+        }catch (Exception e) {
+            System.err.println("Server: Errore durante la ricerca dei film: " + e.getMessage());
+
+
+            responseObserver.onError(io.grpc.Status.INTERNAL
+                    .withDescription("Errore DB durante la ricerca: " + e.getMessage())
+                    .asRuntimeException());
+        }
+    }
 }
