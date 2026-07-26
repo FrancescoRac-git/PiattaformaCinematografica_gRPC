@@ -106,16 +106,8 @@ public class FilmClient {
         }
     }
 
-    public java.util.List<Film> cercaFilm(String titolo, String regista, String genere, String statoVisione, String ordinamento) {
+    public java.util.List<Film> cercaFilm(SearchFilmsRequest request) {
         System.out.println("Client: Avvio ricerca film...");
-
-        SearchFilmsRequest request = SearchFilmsRequest.newBuilder()
-                .setQueryTitolo(titolo != null ? titolo : "")
-                .setQueryRegista(regista != null ? regista : "")
-                .setFiltroGenere(genere != null ? genere : "")
-                .setFiltroStato(statoVisione != null ? statoVisione : "")
-                .setCriterioOrdinamento(ordinamento != null ? ordinamento : "")
-                .build();
 
         try {
 
@@ -133,8 +125,9 @@ public class FilmClient {
     }
 
     public List<Film> getAll(){
-        GetAllFilmsRequest request = GetAllFilmsRequest.newBuilder().build();
+
         try{
+            GetAllFilmsRequest request = GetAllFilmsRequest.newBuilder().build();
             SearchFilmsResponse response = stub.getAll(request);
             System.out.println("Client: Ricerca completata. Trovati " + response.getFilmsCount() + " film.");
 

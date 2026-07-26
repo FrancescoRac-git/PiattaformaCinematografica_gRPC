@@ -1,6 +1,7 @@
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import org.junit.jupiter.api.*;
+import videoteca.backend.gRPC.SearchFilmsRequest;
 import videoteca.frontend.client.FilmClient;
 import videoteca.backend.database.FilmDAODatabase;
 import videoteca.backend.gRPC.FilmServiceImpl;
@@ -71,8 +72,16 @@ public class ClientServerTest {
 
         client.aggiungiNuovoFilm("Il Padrino", "Francis Ford Coppola", 1972, "DRAMMATICO", 5, "VISTO");
 
-        var risultati = client.cercaFilm("Il Padrino", "", "", "", "");
+        SearchFilmsRequest request = SearchFilmsRequest.newBuilder()
+                .setQueryGenerica("Il Padrino")
+                .build();
 
+        var risultati = client.cercaFilm(request);
+
+        var tuttiIFilm = client.getAll();
+
+
+        assertEquals(1,tuttiIFilm.size()," tutti i film sono esattamente 1. Test con database vuoto");
         assertFalse(risultati.isEmpty(), "Il server deve restituire la lista contenente il film inserito");
         assertEquals("Il Padrino", risultati.get(0).getTitolo(), "Il titolo deve corrispondere");
         assertEquals("Francis Ford Coppola", risultati.get(0).getRegista(), "Il regista deve corrispondere");

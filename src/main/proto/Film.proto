@@ -35,16 +35,13 @@ message DeleteFilmRequest {
 
 
 message SearchFilmsRequest {
-  string query_titolo = 1;
-  string query_regista = 2;
-  string filtro_genere = 3;
-  string filtro_stato = 4;
-  string criterio_ordinamento = 5;
+  string query_generica =1;
+  string filtro_genere = 2;
+  string filtro_stato = 3;
+  string criterio_ordinamento = 4;
 }
 
-message GetAllFilmsRequest{
-
-}
+message GetAllFilmsRequest{}
 message SearchFilmsResponse {
   repeated Film films = 1;
 }

@@ -7,7 +7,9 @@ import videoteca.backend.model.Genere;
 import videoteca.backend.model.StatoVisione;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class FilmServiceImpl extends FilmServiceGrpc.FilmServiceImplBase {
@@ -113,50 +115,39 @@ public class FilmServiceImpl extends FilmServiceGrpc.FilmServiceImplBase {
 
     @Override
     public void searchFilms(SearchFilmsRequest request, StreamObserver<SearchFilmsResponse> responseObserver) {
+        try{
+
+        String query = request.getQueryGenerica();
 
 
-        String titolo = request.getQueryTitolo();
-        String regista = request.getQueryRegista();
+        videoteca.backend.model.Film risultatiTitolo = filmDAO.cercaPerTitolo(query);
+        List<videoteca.backend.model.Film> risultatiRegista = filmDAO.cercaPerRegista(query);
 
 
-        List<videoteca.backend.model.Film> filmTrovatiDalDao= new ArrayList<>();
 
-        try {
+        Set<videoteca.backend.model.Film> filmUnici = new LinkedHashSet<>();
+        filmUnici.add(risultatiTitolo);
+        filmUnici.addAll(risultatiRegista);
 
-            if (titolo != null && !titolo.isEmpty()) {
-                filmTrovatiDalDao.add(filmDAO.cercaPerTitolo(titolo));
+        SearchFilmsResponse.Builder responseBuilder = SearchFilmsResponse.newBuilder();
 
-            } else if (regista != null && !regista.isEmpty()) {
-                filmTrovatiDalDao = filmDAO.cercaPerRegista(regista);
-
-            } else {
-                filmTrovatiDalDao = filmDAO.tuttiIfilm();
-            }
-
-
-            SearchFilmsResponse.Builder responseBuilder = SearchFilmsResponse.newBuilder();
-
-            for (videoteca.backend.model.Film mioFilm : filmTrovatiDalDao) {
-
-
-                videoteca.backend.gRPC.Film filmGrpc = videoteca.backend.gRPC.Film.newBuilder()
-                        .setId(mioFilm.getId())
-                        .setTitolo(mioFilm.getTitolo())
-                        .setRegista(mioFilm.getRegista())
-                        .setAnnoUscita(mioFilm.getAnnoDiUscita())
-                        .setGenere(mioFilm.getGenere().name())
-                        .setValutazione(mioFilm.getValutazionePersonale())
-                        .setStatoVisione(mioFilm.getStatoVisione().name())
-                        .build();
-
-                responseBuilder.addFilms(filmGrpc);
-            }
+        for (videoteca.backend.model.Film f : filmUnici) {
+            Film filmGrpc = Film.newBuilder()
+                    .setId(f.getId())
+                    .setTitolo(f.getTitolo())
+                    .setRegista(f.getRegista())
+                    .setAnnoUscita(f.getAnnoDiUscita())
+                    .setGenere(f.getGenere().name())
+                    .setValutazione(f.getValutazionePersonale())
+                    .setStatoVisione(f.getStatoVisione().name())
+                    .build();
+            responseBuilder.addFilms(filmGrpc);
+        }
 
 
-            responseObserver.onNext(responseBuilder.build());
-            responseObserver.onCompleted();
-
-        } catch (Exception e) {
+        responseObserver.onNext(responseBuilder.build());
+        responseObserver.onCompleted();
+    }catch (Exception e) {
             System.err.println("Server: Errore durante la ricerca dei film: " + e.getMessage());
 
 
