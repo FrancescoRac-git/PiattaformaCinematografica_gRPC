@@ -76,7 +76,13 @@ public class ClientServerTest {
                 .setQueryGenerica("Il Padrino")
                 .build();
 
+        SearchFilmsRequest request2 = SearchFilmsRequest.newBuilder()
+                .setQueryGenerica("Francis Ford Coppola")
+                .build();
+
         var risultati = client.cercaFilm(request);
+
+        var risultatiRegista = client.cercaFilm(request2);
 
         var tuttiIFilm = client.getAll();
 
@@ -84,7 +90,7 @@ public class ClientServerTest {
         assertEquals(1,tuttiIFilm.size()," tutti i film sono esattamente 1. Test con database vuoto");
         assertFalse(risultati.isEmpty(), "Il server deve restituire la lista contenente il film inserito");
         assertEquals("Il Padrino", risultati.get(0).getTitolo(), "Il titolo deve corrispondere");
-        assertEquals("Francis Ford Coppola", risultati.get(0).getRegista(), "Il regista deve corrispondere");
+        assertEquals("Francis Ford Coppola", risultatiRegista.get(0).getRegista(), "Il regista deve corrispondere");
     }
 
 

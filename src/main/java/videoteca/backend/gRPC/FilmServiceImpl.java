@@ -11,6 +11,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.apache.logging.log4j.ThreadContext.isEmpty;
+
 
 public class FilmServiceImpl extends FilmServiceGrpc.FilmServiceImplBase {
 
@@ -121,13 +123,17 @@ public class FilmServiceImpl extends FilmServiceGrpc.FilmServiceImplBase {
 
 
         videoteca.backend.model.Film risultatiTitolo = filmDAO.cercaPerTitolo(query);
+        System.out.println(risultatiTitolo);
+
         List<videoteca.backend.model.Film> risultatiRegista = filmDAO.cercaPerRegista(query);
 
 
-
         Set<videoteca.backend.model.Film> filmUnici = new LinkedHashSet<>();
-        filmUnici.add(risultatiTitolo);
-        filmUnici.addAll(risultatiRegista);
+        if (risultatiTitolo!= null) {
+            filmUnici.add(risultatiTitolo);}
+        if (risultatiRegista != null && !risultatiRegista.isEmpty()){
+            filmUnici.addAll(risultatiRegista);
+        }
 
         SearchFilmsResponse.Builder responseBuilder = SearchFilmsResponse.newBuilder();
 
